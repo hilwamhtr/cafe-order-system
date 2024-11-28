@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Verifikasi password
         if (password_verify($password, $hashed_password)) {
             $_SESSION['user_id'] = $id; // Simpan user ID ke session
-            header("Location: webcafe.html"); // Redirect ke webcafe.html
+            header("Location: webcafe.php"); // Redirect ke webcafe.html
             exit; // Hentikan eksekusi setelah redirect
         } else {
             $error = "Password salah. Coba lagi.";
