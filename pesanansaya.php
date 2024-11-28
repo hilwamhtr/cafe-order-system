@@ -140,9 +140,33 @@ $totalOrder = array_reduce($orderItems, function ($total, $item) {
         </div>
     </div>
 
-    <footer class="bg-[#6f4e37] text-white py-6 mt-16">
-        <div class="text-center">
-            &copy; 2024 Kopi Kita - All Rights Reserved
+      <!-- Footer -->
+      <footer class="bg-[#6f4e37] text-white py-12 mt-16">
+        <div class="container mx-auto grid md:grid-cols-3 gap-8 text-center">
+            <div>
+                <h3 class="text-xl font-bold mb-4">Kontak</h3>
+                <p>Email: info@kopikita.com</p>
+                <p>Telepon: (021) 123-4567</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">Jam Buka</h3>
+                <p>Senin - Jumat: 07:00 - 22:00</p>
+                <p>Sabtu - Minggu: 08:00 - 23:00</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">Media Sosial</h3>
+                <div class="flex justify-center space-x-4">
+                    <a href="#" class="hover:text-[#d4a484]">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                    <a href="#" class="hover:text-[#d4a484]">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </a>
+                    <a href="#" class="hover:text-[#d4a484]">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
 </body>
