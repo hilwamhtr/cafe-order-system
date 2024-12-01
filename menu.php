@@ -4,10 +4,9 @@ session_start();
 
 if (isset($_SESSION['cart_message'])) {
     echo "<script>alert('" . $_SESSION['cart_message'] . "');</script>";
-    unset($_SESSION['cart_message']);  // Menghapus pesan setelah ditampilkan
+    unset($_SESSION['cart_message']);  
 }
 
-// Data statis untuk menu
 $menuCategories = ['Semua', 'Kopi', 'Non-Kopi', 'Dessert'];
 $menuItems = [
     [
@@ -110,7 +109,6 @@ $menuItems = [
     ],
 ];
 
-// Fungsi untuk filter menu berdasarkan kategori
 function filterMenu($category, $items) {
     if ($category == 'Semua') {
         return $items;
@@ -119,27 +117,23 @@ function filterMenu($category, $items) {
         return $item['category'] == $category;
     });
 }
-// Jika tombol "Tambah ke Keranjang" diklik
+
 if (isset($_GET['add_to_cart'])) {
     $itemName = $_GET['add_to_cart'];
 
-    // Cari item berdasarkan nama
     $item = array_filter($menuItems, function ($item) use ($itemName) {
         return $item['name'] == $itemName;
     });
-    $item = reset($item); // Ambil item pertama yang cocok
+    $item = reset($item); 
 
-    // Jika item ditemukan, tambahkan ke dalam keranjang
     if ($item) {
         $_SESSION['cart'][] = $item;
     }
 
-    // Redirect ke halaman keranjang
     header('Location: keranjang.php');
     exit;
 }
 
-// Kategori yang aktif (default 'Semua')
 $activeCategory = isset($_GET['category']) ? $_GET['category'] : 'Semua';
 $filteredMenuItems = filterMenu($activeCategory, $menuItems);
 ?>
@@ -155,12 +149,11 @@ $filteredMenuItems = filterMenu($activeCategory, $menuItems);
     <style>
         .menu-item img {
             transition: transform 0.3s ease;
-            border-radius: 0.75rem; /* Sudut tumpul */
+            border-radius: 0.75rem; 
         }
         .menu-item:hover img {
-            transform: scale(1.1); /* Efek zoom */
+            transform: scale(1.1); 
         }
-        /* Pastikan ketinggian kotak menu seragam */
         .menu-item {
             display: flex;
             flex-direction: column;
@@ -175,7 +168,7 @@ $filteredMenuItems = filterMenu($activeCategory, $menuItems);
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-white">KOPI KITA</div>
             <div class="flex space-x-6 text-white">
-                <a href="index.php" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="webcafe.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-home mr-2"></i> Beranda
                 </a>
                 <a href="menu.php" class="flex items-center hover:text-[#d4a484] transition">
@@ -210,12 +203,9 @@ $filteredMenuItems = filterMenu($activeCategory, $menuItems);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 
-
- <!-- Menu Section -->
  <div class="container mx-auto pt-24 px-4">
     <h1 class="text-4xl font-bold text-center mb-8">Menu Kopi Kita</h1>
 
-    <!-- Kategori Menu -->
     <div class="flex justify-center mb-8 space-x-4">
         <?php foreach($menuCategories as $category): ?>
             <a href="?category=<?= urlencode($category) ?>" 
@@ -228,21 +218,15 @@ $filteredMenuItems = filterMenu($activeCategory, $menuItems);
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     <?php foreach($filteredMenuItems as $item): ?>
         <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
-            <!-- Gambar Menu -->
             <img src="<?= $item['image'] ?>" alt="<?= $item['name'] ?>" 
                 class="w-full h-64 object-cover">
             <div class="p-4 flex flex-col flex-1">
-                <!-- Nama Menu -->
                 <h3 class="text-xl font-semibold mb-2"><?= $item['name'] ?></h3>
-                <!-- Deskripsi Menu -->
                 <p class="text-gray-600 mb-4"><?= $item['description'] ?></p>
-                <!-- Harga Menu -->
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-[#6f4e37] font-bold">Rp. <?= number_format($item['price'], 0, ',', '.') ?></span>
                 </div>
-                <!-- Tombol Add to Cart dan Order Now -->
                 <div class="flex flex-col space-y-2 mt-auto">
-                    <!-- Form untuk tambah ke keranjang -->
                     <form action="keranjang.php" method="POST" class="w-full">
                         <input type="hidden" name="menu_id" value="<?= $item['name'] ?>">
                         <input type="hidden" name="menu_price" value="<?= $item['price'] ?>">
@@ -251,7 +235,6 @@ $filteredMenuItems = filterMenu($activeCategory, $menuItems);
                             Tambah ke Keranjang
                         </button>
                     </form>
-                    <!-- Pesan sekarang -->
                     <form action="pesanansaya.php" method="POST" class="w-full">
                         <input type="hidden" name="menu_id" value="<?= $item['name'] ?>">
                         <input type="hidden" name="menu_price" value="<?= $item['price'] ?>">
@@ -266,7 +249,6 @@ $filteredMenuItems = filterMenu($activeCategory, $menuItems);
     <?php endforeach; ?>
 </div>
 
-   <!-- Pop-up untuk pemberitahuan penambahan -->
 <div id="popup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
     <div class="bg-white p-6 rounded-lg shadow-lg">
         <p>Menu berhasil ditambahkan ke keranjang!</p>
@@ -274,8 +256,7 @@ $filteredMenuItems = filterMenu($activeCategory, $menuItems);
     </div>
 </div>
 
-    
-<!-- Footer -->
+
 <footer class="bg-[#6f4e37] text-white py-12 mt-16">
     <div class="container mx-auto grid md:grid-cols-3 gap-8 text-center">
         <div>
