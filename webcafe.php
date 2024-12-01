@@ -1,5 +1,4 @@
 <?php
-// Data statis untuk menu
 $menuCategories = ['Semua', 'Kopi', 'Non-Kopi', 'Dessert'];
 $menuItems = [
     [
@@ -38,7 +37,7 @@ $menuItems = [
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-white">KOPI KITA</div>
             <div class="flex space-x-6 text-white">
-                <a href="index.php" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="webcafe.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-home mr-2"></i> Beranda
                 </a>
                 <a href="menu.php" class="flex items-center hover:text-[#d4a484] transition">
@@ -63,7 +62,6 @@ $menuItems = [
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <header class="h-screen bg-center flex items-center justify-center" 
         style="background: linear-gradient(rgba(62, 39, 35, 0.8), rgba(62, 39, 35, 0.8)),
                 url('/api/placeholder/1200/600');
@@ -73,14 +71,12 @@ $menuItems = [
     <div class="text-center text-white bg-[#4D3636] bg-opacity-50 p-10 rounded-xl">
         <h1 class="text-5xl font-bold mb-4 text-white">Selamat Datang di Kopi Kita</h1>
         <p class="text-xl mb-6">Nikmati kemudahan memesan dan pembayaran digital melalui perangkat anda</p>
-        <!-- Ubah tombol untuk mengarahkan ke menu.php -->
         <a href="menu.php" class="bg-[#6F4E37] text-white px-6 py-3 rounded-full hover:bg-[#D4A484] transition">
             Mulai Pesan        
         </a>
     </div>
 </header>
 
-    <!-- Fitur Unggulan -->
 <section class="bg-[#e2d6c1] py-20 px-6 md:px-16">
     <div class="container mx-auto text-center">
         <h2 class="text-4xl font-bold mb-12 text-[#6F4E37]">Kenapa Harus Kopi Kita?</h2>
@@ -104,7 +100,6 @@ $menuItems = [
     </div>
 </section>
 
-    <!-- Testimoni -->
 <section class="bg-[#e2d6c1] py-16 px-6 md:px-16">
     <div class="container mx-auto text-center">
         <h2 class="text-4xl font-bold mb-12 text-[#6F4E37]">Apa Kata Mereka?</h2>
@@ -128,7 +123,6 @@ $menuItems = [
     </div>
 </section>
 
-    <!-- Footer -->
     <footer class="bg-[#6f4e37] text-white py-12">
         <div class="container mx-auto grid md:grid-cols-3 gap-8 text-center">
             <div>
