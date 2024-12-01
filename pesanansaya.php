@@ -1,21 +1,18 @@
 <?php
 session_start();
 
-// Inisialisasi keranjang jika belum ada
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// Menambah item ke keranjang
 if (isset($_POST['add_to_cart'])) {
     $item = [
         'name' => $_POST['menu_id'],
         'price' => $_POST['menu_price'],
         'image' => $_POST['menu_image'],
-        'quantity' => 1 // default quantity adalah 1
+        'quantity' => 1 
     ];
 
-    // Cek jika item sudah ada di keranjang, jika ada tambahkan jumlahnya
     $found = false;
     foreach ($_SESSION['cart'] as &$cartItem) {
         if ($cartItem['name'] == $item['name']) {
@@ -30,7 +27,6 @@ if (isset($_POST['add_to_cart'])) {
     }
 }
 
-// Menghapus item dari keranjang
 if (isset($_GET['remove'])) {
     $index = (int)$_GET['remove'];
     if (isset($_SESSION['cart'][$index])) {
@@ -38,7 +34,6 @@ if (isset($_GET['remove'])) {
     }
 }
 
-// Hitung ulang total barang dan total harga
 $total_items = 0;
 $total_price = 0;
 foreach ($_SESSION['cart'] as $item) {
@@ -46,20 +41,16 @@ foreach ($_SESSION['cart'] as $item) {
     $total_price += $item['price'] * $item['quantity'];
 }
 
-// Menangani proses checkout
 if (isset($_POST['checkout'])) {
     $delivery_method = $_POST['delivery_method'];
 
     if ($delivery_method === "delivery") {
         $address = $_POST['delivery_address'];
-        // Validasi atau proses pengiriman
     } elseif ($delivery_method === "pickup") {
         $pickup_date = $_POST['pickup_date'];
         $pickup_time = $_POST['pickup_time'];
-        // Validasi atau proses pickup
     }
 
-    // Proses simpan pesanan
     header("Location: checkout.php");
     exit;
 }
@@ -98,7 +89,6 @@ if (isset($_POST['checkout'])) {
                 </a>
                 <a href="rewards.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-award mr-2"></i> Rewards
-                </a>
                 <a href="keranjang.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-shopping-cart mr-2"></i> Keranjang
                  <span id="cart-count" class="bg-red-500 text-white text-xs rounded-full px-2 ml-2">0</span>
@@ -109,7 +99,6 @@ if (isset($_POST['checkout'])) {
     </div>
 </nav>
 
-<!-- Pesanan Section -->
 <div class="container mx-auto pt-24 px-4">
     <h1 class="text-4xl font-bold text-center mb-8">Pesanan Saya</h1>
 
@@ -128,7 +117,6 @@ if (isset($_POST['checkout'])) {
                                 <p>Jumlah: <?= $item['quantity'] ?></p>
                             </div>
                         </div>
-                        <!-- Tombol hapus di sisi kanan -->
                         <form action="pesanansaya.php" method="GET">
                             <input type="hidden" name="remove" value="<?= $index ?>">
                             <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400 transition">
@@ -139,8 +127,7 @@ if (isset($_POST['checkout'])) {
                 </div>
             <?php endforeach; ?>
         </div>
-        
-        <!-- Form Pilihan Pengiriman -->
+
         <form action="pesanansaya.php" method="POST" class="mt-8">
             <div class="mb-4">
                 <label for="delivery_method" class="block font-bold mb-2">Pilih Metode Pengambilan:</label>
@@ -177,13 +164,12 @@ if (isset($_POST['checkout'])) {
 
             <div class="flex space-x-4">
                 <a href="menu.php" class="bg-[#d4a484] text-white px-4 py-2 rounded-lg hover:bg-[#6f4e37]">Kembali ke Menu</a>
-                <button type="submit" name="checkout" class="bg-[#6f4e37] text-white px-4 py-2 rounded-lg hover:bg-[#d4a484]">Checkout</button>
+                <a href="payment.php" class="bg-[#d4a484] text-white px-4 py-2 rounded-lg hover:bg-[#6f4e37]">checkout</a></button>
             </div>
         </form>
     <?php endif; ?>
 </div>
 
-<!-- Footer -->
 <footer class="bg-[#6f4e37] text-white py-12 mt-16">
     <div class="container mx-auto grid md:grid-cols-3 gap-8 text-center">
         <div>
