@@ -1,13 +1,10 @@
 <?php
-// Pastikan sesi sudah dimulai
 session_start();
 
-// Inisialisasi rewards jika belum ada
 if (!isset($_SESSION['rewards'])) {
-    $_SESSION['rewards'] = 0; // Default rewards: 0
+    $_SESSION['rewards'] = 0; 
 }
 
-// Fungsi untuk menambah stempel
 function tambahStempel() {
     if (!isset($_SESSION['current_stamps'])) {
         $_SESSION['current_stamps'] = 0;
@@ -15,10 +12,8 @@ function tambahStempel() {
     $_SESSION['current_stamps']++; // Tambah stempel
 }
 
-// Cek apakah pembayaran berhasil (misalnya dengan pengecekan status transaksi)
-$pembayaran_berhasil = false; // Nilai default false untuk pembayaran belum berhasil
+$pembayaran_berhasil = false; 
 
-// Proses jika form disubmit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama = htmlspecialchars(trim($_POST['nama']));
     $paymentMethod = htmlspecialchars(trim($_POST['payment-method']));
@@ -27,44 +22,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nomorVA = isset($_POST['nomor-va']) ? htmlspecialchars(trim($_POST['nomor-va'])) : null;
     $jumlah = htmlspecialchars(trim($_POST['jumlah']));
 
-    // Logika validasi dan output
     if ($paymentMethod === 'transfer_bank') {
         if (!$bank || !$nomorRekening) {
             $pesan = "Silakan pilih bank dan masukkan nomor rekening.";
         } else {
             $pesan = "Pembayaran sebesar Rp $jumlah berhasil diproses melalui Transfer Bank ($bank). Terima kasih, $nama!";
-            $_SESSION['rewards']++; // Tambah rewards
-            $pembayaran_berhasil = true; // Pembayaran berhasil
+            $_SESSION['rewards']++; 
+            $pembayaran_berhasil = true; 
         }
     } elseif (in_array($paymentMethod, ['shopeepay', 'dana', 'ovo', 'gopay'])) {
         if (!$nomorVA) {
             $pesan = "Silakan masukkan nomor Virtual Account.";
         } else {
             $pesan = "Pembayaran sebesar Rp $jumlah berhasil diproses melalui " . ucfirst($paymentMethod) . ". Terima kasih, $nama!";
-            $_SESSION['rewards']++; // Tambah rewards
-            $pembayaran_berhasil = true; // Pembayaran berhasil
+            $_SESSION['rewards']++; 
+            $pembayaran_berhasil = true; 
         }
     } elseif ($paymentMethod === 'cod') {
         $pesan = "Pesanan Anda akan dibayar saat pengantaran (COD). Terima kasih, $nama!";
-        $_SESSION['rewards']++; // Tambah rewards
-        $pembayaran_berhasil = true; // Pembayaran berhasil
+        $_SESSION['rewards']++; 
+        $pembayaran_berhasil = true; 
     } else {
         $pesan = "Harap lengkapi semua data pembayaran.";
     }
 }
 
-// Periksa apakah reward telah mencapai 10 untuk memberikan diskon
 $diskonPesan = '';
 if ($_SESSION['rewards'] >= 10) {
     $diskonPesan = "Selamat! Anda telah mengumpulkan 10 rewards. Anda mendapatkan potongan 50% untuk pembelian berikutnya!";
-    $_SESSION['rewards'] = 0; // Reset rewards setelah diskon
+    $_SESSION['rewards'] = 0; 
 }
 
 if ($pembayaran_berhasil) {
-    // Tambah stempel setelah pembayaran berhasil
     tambahStempel();
 
-    // Redirect ke halaman rewards setelah pembayaran sukses
     header('Location: rewards.php');
     exit;
 }
@@ -75,7 +66,6 @@ if ($pembayaran_berhasil) {
 <head>
     <title>PAYMENT KOPI KITA</title>
     <style>
-        /* CSS */
         body {
             font-family: Arial, sans-serif;
             background-color: #2c1607;
@@ -203,7 +193,6 @@ if ($pembayaran_berhasil) {
         <?php endif; ?>
     </div>
 
-    <!-- JavaScript untuk menampilkan opsi pembayaran -->
     <script>
         function showPaymentOptions(method) {
             const bankSelection = document.getElementById("bank-selection");
