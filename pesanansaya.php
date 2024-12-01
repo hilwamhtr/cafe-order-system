@@ -1,22 +1,68 @@
 <?php
-// Contoh data pesanan untuk testing
-$orderItems = [
-    [
-        'name' => 'Cafe Latte',
-        'quantity' => 2,
-        'price' => 28000
-    ],
-    [
-        'name' => 'Chocolate Brownie',
-        'quantity' => 1,
-        'price' => 25000
-    ]
-];
+session_start();
 
-// Hitung total pesanan
-$totalOrder = array_reduce($orderItems, function ($total, $item) {
-    return $total + ($item['price'] * $item['quantity']);
-}, 0);
+// Inisialisasi keranjang jika belum ada
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
+
+// Menambah item ke keranjang
+if (isset($_POST['add_to_cart'])) {
+    $item = [
+        'name' => $_POST['menu_id'],
+        'price' => $_POST['menu_price'],
+        'image' => $_POST['menu_image'],
+        'quantity' => 1 // default quantity adalah 1
+    ];
+
+    // Cek jika item sudah ada di keranjang, jika ada tambahkan jumlahnya
+    $found = false;
+    foreach ($_SESSION['cart'] as &$cartItem) {
+        if ($cartItem['name'] == $item['name']) {
+            $cartItem['quantity']++;
+            $found = true;
+            break;
+        }
+    }
+
+    if (!$found) {
+        $_SESSION['cart'][] = $item;
+    }
+}
+
+// Menghapus item dari keranjang
+if (isset($_GET['remove'])) {
+    $index = (int)$_GET['remove'];
+    if (isset($_SESSION['cart'][$index])) {
+        array_splice($_SESSION['cart'], $index, 1);
+    }
+}
+
+// Hitung ulang total barang dan total harga
+$total_items = 0;
+$total_price = 0;
+foreach ($_SESSION['cart'] as $item) {
+    $total_items += $item['quantity'];
+    $total_price += $item['price'] * $item['quantity'];
+}
+
+// Menangani proses checkout
+if (isset($_POST['checkout'])) {
+    $delivery_method = $_POST['delivery_method'];
+
+    if ($delivery_method === "delivery") {
+        $address = $_POST['delivery_address'];
+        // Validasi atau proses pengiriman
+    } elseif ($delivery_method === "pickup") {
+        $pickup_date = $_POST['pickup_date'];
+        $pickup_time = $_POST['pickup_time'];
+        // Validasi atau proses pickup
+    }
+
+    // Proses simpan pesanan
+    header("Location: checkout.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -26,10 +72,16 @@ $totalOrder = array_reduce($orderItems, function ($total, $item) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesanan Saya - Kopi Kita</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.2/cdn.min.js" defer></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script>
+        function toggleFields(value) {
+            document.getElementById('delivery_fields').style.display = value === 'delivery' ? 'block' : 'none';
+            document.getElementById('pickup_fields').style.display = value === 'pickup' ? 'block' : 'none';
+        }
+    </script>
 </head>
 <body class="bg-[#f4f1de] text-[#3d405b]">
+
     <!-- Navigasi -->
     <nav class="bg-[#6f4e37] fixed w-full z-50 shadow-md">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -47,127 +99,117 @@ $totalOrder = array_reduce($orderItems, function ($total, $item) {
                 <a href="#rewards" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-award mr-2"></i> Rewards
                 </a>
-                <a href="#keranjang" class="flex items-center hover:text-[#d4a484] transition">
-                    <i class="fas fa-shopping-cart mr-2"></i> Keranjang
+                <a href="keranjang.php" class="flex items-center hover:text-[#d4a484] transition">
+                <i class="fas fa-shopping-cart mr-2"></i> Keranjang
                 </a>
                 <a href="login.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
                 </a>
+    </div>
+</nav>
+
+<!-- Pesanan Section -->
+<div class="container mx-auto pt-24 px-4">
+    <h1 class="text-4xl font-bold text-center mb-8">Pesanan Saya</h1>
+
+    <?php if (empty($_SESSION['cart'])): ?>
+        <p class="text-center text-xl">Belum ada pesanan.</p>
+    <?php else: ?>
+        <div class="space-y-8">
+            <?php foreach ($_SESSION['cart'] as $index => $item): ?>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center justify-between space-x-6">
+                        <div class="flex items-center space-x-6">
+                            <img src="<?= $item['image'] ?>" alt="<?= $item['name'] ?>" class="w-32 h-32 object-cover rounded-lg">
+                            <div>
+                                <h3 class="text-2xl font-semibold"><?= $item['name'] ?></h3>
+                                <p>Rp. <?= number_format($item['price'], 0, ',', '.') ?></p>
+                                <p>Jumlah: <?= $item['quantity'] ?></p>
+                            </div>
+                        </div>
+                        <!-- Tombol hapus di sisi kanan -->
+                        <form action="pesanansaya.php" method="GET">
+                            <input type="hidden" name="remove" value="<?= $index ?>">
+                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400 transition">
+                                <i class="fas fa-trash-alt"></i> Hapus
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        
+        <!-- Form Pilihan Pengiriman -->
+        <form action="pesanansaya.php" method="POST" class="mt-8">
+            <div class="mb-4">
+                <label for="delivery_method" class="block font-bold mb-2">Pilih Metode Pengambilan:</label>
+                <select name="delivery_method" id="delivery_method" class="w-full p-3 rounded-lg" onchange="toggleFields(this.value)">
+                    <option value="delivery">Delivery</option>
+                    <option value="pickup">Pickup</option>
+                </select>
             </div>
-        </div>
-    </nav>
 
-    <!-- Pesanan Section -->
-    <div class="container mx-auto pt-24 px-4">
-        <h1 class="text-4xl font-bold text-center mb-8">Pesanan Saya</h1>
-
-        <!-- Tabel Pesanan -->
-        <div class="bg-white p-6 shadow-md rounded-lg mb-8">
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="border-b">
-                        <th class="py-3">Nama Menu</th>
-                        <th class="py-3 text-center">Jumlah</th>
-                        <th class="py-3 text-right">Harga</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($orderItems as $item): ?>
-                        <tr class="border-b">
-                            <td class="py-2"><?= $item['name'] ?></td>
-                            <td class="py-2 text-center"><?= $item['quantity'] ?></td>
-                            <td class="py-2 text-right">Rp. <?= number_format($item['price'] * $item['quantity'], 0, ',', '.') ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Pilihan Pengambilan -->
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">Pilih Cara Pengambilan</h2>
-            <div x-data="{ pickup: true }">
-                <div class="flex space-x-4 mb-4">
-                    <button @click="pickup = true" class="px-6 py-3 rounded-lg" 
-                            :class="pickup ? 'bg-[#6f4e37] text-white' : 'bg-white text-[#6f4e37] border border-[#6f4e37]'">
-                        Pickup
-                    </button>
-                    <button @click="pickup = false" class="px-6 py-3 rounded-lg" 
-                            :class="pickup ? 'bg-white text-[#6f4e37] border border-[#6f4e37]' : 'bg-[#6f4e37] text-white'">
-                        Delivery
-                    </button>
-                </div>
-
-                <!-- Pickup Info -->
-                <div x-show="pickup" class="mt-4">
-                    <label class="block mb-2 font-bold">Waktu Pickup</label>
-                    <input type="time" class="w-full px-4 py-2 border rounded-lg mb-4">
-                    <label class="block mb-2 font-bold">Tanggal Pickup</label>
-                    <input type="date" class="w-full px-4 py-2 border rounded-lg">
-                </div>
-
-                <!-- Delivery Info -->
-                <div x-show="!pickup" class="mt-4">
-                    <label class="block mb-2 font-bold">Alamat Pengiriman</label>
-                    <textarea class="w-full px-4 py-2 border rounded-lg" rows="3" placeholder="Masukkan alamat Anda"></textarea>
-                </div>
+            <div id="delivery_fields" class="mb-4">
+                <label for="delivery_address" class="block font-bold mb-2">Alamat Pengiriman:</label>
+                <input type="text" name="delivery_address" id="delivery_address" class="w-full p-3 rounded-lg" placeholder="Masukkan alamat pengiriman">
             </div>
-        </div>
 
-        <!-- Metode Pembayaran -->
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">Pilih Metode Pembayaran</h2>
-            <select class="w-full px-4 py-3 border rounded-lg">
-                <option value="bank">Transfer Bank</option>
-                <option value="spay">ShopeePay</option>
-                <option value="gopay">GoPay</option>
-                <option value="ovo">OVO</option>
-                <option value="cod">COD</option>
-            </select>
-        </div>
+            <div id="pickup_fields" class="mb-4 hidden">
+                <label for="pickup_date" class="block font-bold mb-2">Tanggal Pickup:</label>
+                <input type="date" name="pickup_date" id="pickup_date" class="w-full p-3 rounded-lg">
+                <label for="pickup_time" class="block font-bold mb-2 mt-4">Jam Pickup:</label>
+                <input type="time" name="pickup_time" id="pickup_time" class="w-full p-3 rounded-lg">
+            </div>
 
-        <!-- Total Order -->
-        <div class="flex justify-between items-center">
-            <h3 class="text-2xl font-bold">Total Order</h3>
-            <span class="text-2xl font-bold text-[#6f4e37]">Rp. <?= number_format($totalOrder, 0, ',', '.') ?></span>
-        </div>
+            <div class="mb-4">
+                <label for="payment_method" class="block font-bold mb-2">Metode Pembayaran:</label>
+                <select name="payment_method" id="payment_method" class="w-full p-3 rounded-lg">
+                    <option value="bank">Bank Transfer</option>
+                    <option value="spay">ShopeePay</option>
+                    <option value="gopay">GoPay</option>
+                    <option value="ovo">OVO</option>
+                    <option value="cash">Cash</option>
+                </select>
+            </div>
 
-        <!-- Tombol Checkout -->
-        <div class="mt-8 text-center">
-            <a href="payment.php" class="bg-[#6f4e37] text-white px-6 py-3 rounded-lg hover:bg-[#d4a484] transition">
-                Lanjutkan ke Pembayaran
-            </a>
+            <p class="text-lg font-bold mb-4">Total Pesanan: <?= $total_items ?> item - Rp. <?= number_format($total_price, 0, ',', '.') ?></p>
+
+            <div class="flex space-x-4">
+                <a href="menu.php" class="bg-[#d4a484] text-white px-4 py-2 rounded-lg hover:bg-[#6f4e37]">Kembali ke Menu</a>
+                <button type="submit" name="checkout" class="bg-[#6f4e37] text-white px-4 py-2 rounded-lg hover:bg-[#d4a484]">Checkout</button>
+            </div>
+        </form>
+    <?php endif; ?>
+</div>
+
+<!-- Footer -->
+<footer class="bg-[#6f4e37] text-white py-12 mt-16">
+    <div class="container mx-auto grid md:grid-cols-3 gap-8 text-center">
+        <div>
+            <h3 class="text-xl font-bold mb-4">Kontak</h3>
+            <p>Email: info@kopikita.com</p>
+            <p>Telepon: (021) 123-4567</p>
+        </div>
+        <div>
+            <h3 class="text-xl font-bold mb-4">Jam Buka</h3>
+            <p>Senin - Jumat: 07:00 - 22:00</p>
+            <p>Sabtu - Minggu: 08:00 - 23:00</p>
+        </div>
+        <div>
+            <h3 class="text-xl font-bold mb-4">Media Sosial</h3>
+            <div class="flex justify-center space-x-4">
+                <a href="#" class="hover:text-[#d4a484]">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+                <a href="#" class="hover:text-[#d4a484]">
+                    <i class="fab fa-facebook"></i> Facebook
+                </a>
+                <a href="#" class="hover:text-[#d4a484]">
+                    <i class="fab fa-twitter"></i> Twitter
+                </a>
+            </div>
         </div>
     </div>
-
-      <!-- Footer -->
-      <footer class="bg-[#6f4e37] text-white py-12 mt-16">
-        <div class="container mx-auto grid md:grid-cols-3 gap-8 text-center">
-            <div>
-                <h3 class="text-xl font-bold mb-4">Kontak</h3>
-                <p>Email: info@kopikita.com</p>
-                <p>Telepon: (021) 123-4567</p>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold mb-4">Jam Buka</h3>
-                <p>Senin - Jumat: 07:00 - 22:00</p>
-                <p>Sabtu - Minggu: 08:00 - 23:00</p>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold mb-4">Media Sosial</h3>
-                <div class="flex justify-center space-x-4">
-                    <a href="#" class="hover:text-[#d4a484]">
-                        <i class="fab fa-instagram"></i> Instagram
-                    </a>
-                    <a href="#" class="hover:text-[#d4a484]">
-                        <i class="fab fa-facebook"></i> Facebook
-                    </a>
-                    <a href="#" class="hover:text-[#d4a484]">
-                        <i class="fab fa-twitter"></i> Twitter
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
+</footer>
 </body>
 </html>
