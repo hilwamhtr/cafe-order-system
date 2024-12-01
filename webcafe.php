@@ -38,7 +38,7 @@ $menuItems = [
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-white">KOPI KITA</div>
             <div class="flex space-x-6 text-white">
-                <a href="#home" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="webcafe.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-home mr-2"></i> Beranda
                 </a>
                 <a href="menu.php" class="flex items-center hover:text-[#d4a484] transition">
@@ -47,13 +47,13 @@ $menuItems = [
                 <a href="pesanansaya.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-shopping-cart mr-2"></i> Pesanan Saya
                 </a>
-                <a href="#rewards" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="rewards.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-award mr-2"></i> Rewards
                 </a>
-                <a href="#keranjang" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="keranjang.php" class="flex items-center hover:text-[#d4a484] transition">
                 <i class="fas fa-shopping-cart mr-2"></i> Keranjang
                 </a>
-                <a href="logout.php" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="login.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
                 </a>
             </div>
@@ -78,50 +78,52 @@ $menuItems = [
 </header>
 
     <!-- Fitur Unggulan -->
-    <section class="container mx-auto py-16 px-4">
-        <h2 class="text-4xl font-bold text-center mb-12">Mengapa Memilih Kopi Kita?</h2>
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="text-center p-6 bg-white rounded-lg shadow-md">
-                <i class="fas fa-coffee text-[#6f4e37] text-6xl mb-4"></i>
-                <h3 class="text-xl font-semibold mb-2">Kopi Berkualitas</h3>
-                <p>Kami menyajikan berbagai menu kopi dan dessert pilihan dari resep terbaik</p>
+<section class="bg-[#e2d6c1] py-20 px-6 md:px-16">
+    <div class="container mx-auto text-center">
+        <h2 class="text-4xl font-bold mb-12 text-[#6F4E37]">Kenapa Harus Kopi Kita?</h2>
+        <div class="grid md:grid-cols-3 gap-10">
+            <div class="feature-card bg-white p-8 rounded-xl shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg">
+                <i class="fas fa-coffee text-[#6F4E37] text-5xl mb-6"></i>
+                <h3 class="text-2xl font-semibold mb-4 text-[#6F4E37]">Kopi yang Selalu Menggoda</h3>
+                <p class="text-gray-600">Rasakan kenikmatan kopi berkualitas setiap tegukan!</p>
             </div>
-            <div class="text-center p-6 bg-white rounded-lg shadow-md">
-                <i class="fas fa-map-marker-alt text-[#6f4e37] text-6xl mb-4"></i>
-                <h3 class="text-xl font-semibold mb-2">Lokasi Mudah</h3>
-                <p>lokasi strategis karena ada di pusat kota</p>
+            <div class="feature-card bg-white p-8 rounded-xl shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg">
+                <i class="fas fa-map-marker-alt text-[#6F4E37] text-5xl mb-6"></i>
+                <h3 class="text-2xl font-semibold mb-4 text-[#6F4E37]">Lokasi Strategis & Nyaman</h3>
+                <p class="text-gray-600">Kami hadir di tempat yang mudah dijangkau, nyaman untuk bersantai atau bekerja.</p>
             </div>
-            <div class="text-center p-6 bg-white rounded-lg shadow-md">
-                <i class="fas fa-clock text-[#6f4e37] text-6xl mb-4"></i>
-                <h3 class="text-xl font-semibold mb-2">Buka Lama</h3>
-                <p>Senin-Jumat: 07:00 - 22:00, Sabtu-Minggu: 08:00 - 23:00</p>
+            <div class="feature-card bg-white p-8 rounded-xl shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg">
+                <i class="fas fa-clock text-[#6F4E37] text-5xl mb-6"></i>
+                <h3 class="text-2xl font-semibold mb-4 text-[#6F4E37]">Waktu yang Fleksibel</h3>
+                <p class="text-gray-600">Kami buka lebih lama, sehingga Anda bisa menikmati kopi kapan saja.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Testimoni -->
-    <section class="bg-[#e2d6c1] py-16">
-        <div class="container mx-auto text-center">
-            <h2 class="text-4xl font-bold mb-12">Apa Kata Mereka Tentang Kopi Kita</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <i class="fas fa-star text-yellow-500 text-2xl mb-4"></i>
-                    <p class="mb-4 italic">"Kopi terenak yang pernah saya cicipi!"</p>
-                    <h4 class="font-semibold">- Budi Santoso</h4>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <i class="fas fa-star text-yellow-500 text-2xl mb-4"></i>
-                    <p class="mb-4 italic">"Pelayanan ramah dan cepat"</p>
-                    <h4 class="font-semibold">- Maria Kusuma</h4>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <i class="fas fa-star text-yellow-500 text-2xl mb-4"></i>
-                    <p class="mb-4 italic">"Rewards-nya keren banget!"</p>
-                    <h4 class="font-semibold">- Ahmad Rifai</h4>
-                </div>
+<section class="bg-[#e2d6c1] py-16 px-6 md:px-16">
+    <div class="container mx-auto text-center">
+        <h2 class="text-4xl font-bold mb-12 text-[#6F4E37]">Apa Kata Mereka?</h2>
+        <div class="grid md:grid-cols-3 gap-10">
+            <div class="testimony-card bg-white p-8 rounded-xl shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg">
+                <i class="fas fa-star text-yellow-500 text-4xl mb-6"></i>
+                <p class="mb-6 italic">"Gokil minum kopi di sini bikin ketagihan"</p>
+                <h4 class="font-semibold text-[#6F4E37]">- Jake Sim</h4>
+            </div>
+            <div class="testimony-card bg-white p-8 rounded-xl shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg">
+                <i class="fas fa-star text-yellow-500 text-4xl mb-6"></i>
+                <p class="mb-6 italic">"Nyaman banget kalo mau minum kopi atau pesen cemilan di sini, pelayanannya cepet dan kualitasnya selalu oke"</p>
+                <h4 class="font-semibold text-[#6F4E37]">- Jennie Kim</h4>
+            </div>
+            <div class="testimony-card bg-white p-8 rounded-xl shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg">
+                <i class="fas fa-star text-yellow-500 text-4xl mb-6"></i>
+                <p class="mb-6 italic">"Program rewards-nya keren! Dapat diskon setelah beberapa kali pembelian"</p>
+                <h4 class="font-semibold text-[#6F4E37]">- Chanyeol Park</h4>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Footer -->
     <footer class="bg-[#6f4e37] text-white py-12">
@@ -138,16 +140,16 @@ $menuItems = [
             </div>
             <div>
                 <h3 class="text-xl font-bold mb-4">Media Sosial</h3>
-                <div class="flex justify-center space-x-4">
-                    <a href="#" class="hover:text-[#d4a484]">
-                        <i class="fab fa-instagram"></i> Instagram
-                    </a>
-                    <a href="#" class="hover:text-[#d4a484]">
-                        <i class="fab fa-facebook"></i> Facebook
-                    </a>
-                    <a href="#" class="hover:text-[#d4a484]">
-                        <i class="fab fa-twitter"></i> Twitter
-                    </a>
+        <div class="flex justify-center space-x-4">
+             <a href="https://www.instagram.com/imazinesyen/" class="hover:text-[#d4a484]">
+                <i class="fab fa-instagram"></i> Instagram
+        </a>
+             <a href="https://www.facebook.com/CristianoRonaldo/" class="hover:text-[#d4a484]">
+                <i class="fab fa-facebook"></i> Facebook
+        </a>
+            <a href="https://twitter.com/mfs_ub" class="hover:text-[#d4a484]">
+                <i class="fab fa-twitter"></i> Twitter
+        </a>
                 </div>
             </div>
         </div>
