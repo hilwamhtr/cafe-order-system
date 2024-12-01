@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 // Inisialisasi keranjang jika belum ada
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
@@ -65,26 +66,28 @@ if (isset($_POST['order_now'])) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-[#f4f1de] text-[#3d405b]">
-    <!-- Navigasi -->
-    <nav class="bg-[#6f4e37] fixed w-full z-50 shadow-md">
+   <!-- Navigasi -->
+   <nav class="bg-[#6f4e37] fixed w-full z-50 shadow-md">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-white">KOPI KITA</div>
             <div class="flex space-x-6 text-white">
-                <a href="webcafe.php" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="index.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-home mr-2"></i> Beranda
                 </a>
                 <a href="menu.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-coffee mr-2"></i> Menu
                 </a>
                 <a href="pesanansaya.php" class="flex items-center hover:text-[#d4a484] transition">
-                    <i class="fas fa-shopping-cart mr-2"></i> Pesanan Saya
+                <i class="fas fa-shopping-cart mr-2"></i> Pesanan Saya
                 </a>
                 <a href="rewards.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-award mr-2"></i> Rewards
                 </a>
                 <a href="keranjang.php" class="flex items-center hover:text-[#d4a484] transition">
-                    <i class="fas fa-shopping-cart mr-2"></i> Keranjang
-                 <span id="cart-count" class="bg-red-500 text-white text-xs rounded-full px-2 ml-2">0</span>
+                 <i class="fas fa-shopping-cart mr-2"></i> Keranjang
+                    <span id="cart-count" class="bg-red-500 text-white text-xs rounded-full px-2 ml-2">
+                <?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
+                    </span>
                 </a>
                 <a href="login.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
@@ -133,6 +136,15 @@ if (isset($_POST['order_now'])) {
     <?php endif; ?>
 </div>
 
+<script>
+    // Menampilkan pesan berhasil ditambahkan
+    <?php if (isset($_POST['add_to_cart'])): ?>
+        alert("Item berhasil ditambahkan ke keranjang!");
+    <?php endif; ?>
+</script>
+
+
+
 <!-- Footer -->
 <footer class="bg-[#6f4e37] text-white py-12 mt-16">
     <div class="container mx-auto grid md:grid-cols-3 gap-8 text-center">
@@ -147,17 +159,17 @@ if (isset($_POST['order_now'])) {
             <p>Sabtu - Minggu: 08:00 - 23:00</p>
         </div>
         <div>
-            <h3 class="text-xl font-bold mb-4">Media Sosial</h3>
-            <div class="flex justify-center space-x-4">
-                <a href="#" class="hover:text-[#d4a484]">
-                    <i class="fab fa-instagram"></i> Instagram
-                </a>
-                <a href="#" class="hover:text-[#d4a484]">
-                    <i class="fab fa-facebook"></i> Facebook
-                </a>
-                <a href="#" class="hover:text-[#d4a484]">
-                    <i class="fab fa-twitter"></i> Twitter
-                </a>
+        <h3 class="text-xl font-bold mb-4">Media Sosial</h3>
+        <div class="flex justify-center space-x-4">
+             <a href="https://www.instagram.com/imazinesyen/" class="hover:text-[#d4a484]">
+                <i class="fab fa-instagram"></i> Instagram
+        </a>
+             <a href="https://www.facebook.com/CristianoRonaldo/" class="hover:text-[#d4a484]">
+                <i class="fab fa-facebook"></i> Facebook
+        </a>
+            <a href="https://twitter.com/mfs_ub" class="hover:text-[#d4a484]">
+                <i class="fab fa-twitter"></i> Twitter
+        </a>
             </div>
         </div>
     </div>
