@@ -1,6 +1,11 @@
 <?php
 session_start(); // Memulai sesi
 
+// Inisialisasi rewards jika belum ada
+if (!isset($_SESSION['rewards'])) {
+    $_SESSION['rewards'] = 0; // Default rewards: 0
+}
+
 // Inisialisasi variabel
 $pesan = '';
 $formVisible = true; // Menentukan apakah form harus ditampilkan
@@ -20,21 +25,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pesan = "Silakan pilih bank dan masukkan nomor rekening.";
         } else {
             $pesan = "Pembayaran sebesar Rp $jumlah berhasil diproses melalui Transfer Bank ($bank). Terima kasih, $nama!";
-            $formVisible = false; // Sembunyikan form setelah pembayaran berhasil
+            $_SESSION['rewards']++; // Tambah rewards
+            $formVisible = false;
         }
     } elseif (in_array($paymentMethod, ['shopeepay', 'dana', 'ovo', 'gopay'])) {
         if (!$nomorVA) {
             $pesan = "Silakan masukkan nomor Virtual Account.";
         } else {
             $pesan = "Pembayaran sebesar Rp $jumlah berhasil diproses melalui " . ucfirst($paymentMethod) . ". Terima kasih, $nama!";
-            $formVisible = false; // Sembunyikan form setelah pembayaran berhasil
+            $_SESSION['rewards']++; // Tambah rewards
+            $formVisible = false;
         }
     } elseif ($paymentMethod === 'cod') {
         $pesan = "Pesanan Anda akan dibayar saat pengantaran (COD). Terima kasih, $nama!";
-        $formVisible = false; // Sembunyikan form setelah pembayaran berhasil
+        $_SESSION['rewards']++; // Tambah rewards
+        $formVisible = false;
     } else {
         $pesan = "Harap lengkapi semua data pembayaran.";
     }
+}
+// Periksa apakah reward telah mencapai 10 untuk memberikan diskon
+$diskonPesan = '';
+if ($_SESSION['rewards'] >= 10) {
+    $diskonPesan = "Selamat! Anda telah mengumpulkan 10 rewards. Anda mendapatkan potongan 50% untuk pembelian berikutnya!";
+    $_SESSION['rewards'] = 0; // Reset rewards setelah diskon
 }
 ?>
 
@@ -91,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 14px;
         }
 
-        button[type="submit"] {
+        button[type="submit"], .rewards-btn {
             width: 100%;
             background-color: #87460d;
             color: white;
@@ -101,9 +115,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             cursor: pointer;
             font-size: 16px;
             font-weight: bold;
+            margin-top: 10px;
         }
 
-        button[type="submit"]:hover {
+        button[type="submit"]:hover, .rewards-btn:hover {
             background-color: #5d89ca;
         }
 
@@ -114,11 +129,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .result {
-          margin-top: 20px; 
-          text-align: center; 
-          color: green; 
-          font-weight: bold; 
-      }
+            margin-top: 20px; 
+            text-align: center; 
+            color: green; 
+            font-weight: bold; 
+        }
     </style>
 </head>
 <body>
@@ -126,81 +141,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h1>PAYMENT KOPI KITA</h1>
 
         <?php if (!$formVisible): ?>
-          <div class="result"><?php echo nl2br($pesan); ?></div>
+    <div class="result">
+        <!-- Menampilkan pesan hasil pembayaran -->
+        <p><?php echo nl2br($pesan); ?></p>
+
+        <!-- Menampilkan pesan diskon jika ada -->
+        <?php if (!empty($diskonPesan)): ?>
+            <p style="color: red; font-weight: bold; margin-top: 10px;"><?= $diskonPesan; ?></p>
+        <?php endif; ?>
+
+        <!-- Tombol untuk melihat rewards -->
+        <a href="rewards.php" style="display: inline-block; text-align: center; 
+        padding: 10px 15px; background-color: #87460d; color: white; 
+        text-decoration: none; font-weight: bold; border-radius: 4px; margin-top: 15px;">
+            Lihat Rewards
+        </a>
+    </div>
         <?php else: ?>
-          <form id="payment-form" method="POST">
-              <label for="nama">Nama Lengkap</label>
-              <input type="text" id="nama" name="nama" required>
+            <form id="payment-form" method="POST">
+                <label for="nama">Nama Lengkap</label>
+                <input type="text" id="nama" name="nama" required>
 
-              <label for="payment-method">Metode Pembayaran</label>
-              <select id="payment-method" name="payment-method" onchange="showPaymentOptions(this.value)" required>
-                  <option value="">-Pilih Metode Pembayaran-</option>
-                  <option value="transfer_bank">Transfer Bank</option>
-                  <option value="shopeepay">ShopeePay</option>
-                  <option value="dana">Dana</option>
-                  <option value="ovo">OVO</option>
-                  <option value="gopay">GoPay</option>
-                  <option value="cod">COD</option>
-              </select>
+                <label for="payment-method">Metode Pembayaran</label>
+                <select id="payment-method" name="payment-method" onchange="showPaymentOptions(this.value)" required>
+                    <option value="">-Pilih Metode Pembayaran-</option>
+                    <option value="transfer_bank">Transfer Bank</option>
+                    <option value="shopeepay">ShopeePay</option>
+                    <option value="dana">Dana</option>
+                    <option value="ovo">OVO</option>
+                    <option value="gopay">GoPay</option>
+                    <option value="cod">COD</option>
+                </select>
 
-              <div id="bank-selection" style="display:none;">
-                  <label for="bank">Pilih Bank:</label>
-                  <select id="bank" name="bank" onchange="showAccountInput(this.value)">
-                      <option value="">-Pilih Bank-</option>
-                      <option value="bca">BCA</option>
-                      <option value="bni">BNI</option>
-                      <option value="mandiri">Mandiri</option>
-                      <option value="bri">BRI</option>
-                  </select>
-              </div>
+                <div id="bank-selection" style="display:none;">
+                    <label for="bank">Pilih Bank:</label>
+                    <select id="bank" name="bank" onchange="showAccountInput(this.value)">
+                        <option value="">-Pilih Bank-</option>
+                        <option value="bca">BCA</option>
+                        <option value="bni">BNI</option>
+                        <option value="mandiri">Mandiri</option>
+                        <option value="bri">BRI</option>
+                    </select>
+                </div>
 
-              <div id="account-input" style="display:none;">
-                  <label for="nomor-rekening">Nomor Rekening</label>
-                  <input type="text" id="nomor-rekening" name="nomor-rekening">
-              </div>
+                <div id="account-input" style="display:none;">
+                    <label for="nomor-rekening">Nomor Rekening</label>
+                    <input type="text" id="nomor-rekening" name="nomor-rekening">
+                </div>
 
-              <div id="virtual-account-input" style="display:none;">
-                  <label for="nomor-va">Nomor Virtual Account</label>
-                  <input type="text" id="nomor-va" name="nomor-va">
-              </div>
+                <div id="virtual-account-input" style="display:none;">
+                    <label for="nomor-va">Nomor Virtual Account</label>
+                    <input type="text" id="nomor-va" name="nomor-va">
+                </div>
 
-              <label for="jumlah">Jumlah Pembayaran</label>
-              <input type="number" id="jumlah" name="jumlah" required>
+                <label for="jumlah">Jumlah Pembayaran</label>
+                <input type="number" id="jumlah" name="jumlah" required>
 
-              <button type="submit">Bayar</button> 
-          </form>
+                <button type="submit">Bayar</button>
+            </form>
+        <?php endif; ?>
+    </div>
 
-          <!-- Tempat untuk menampilkan hasil -->
-          <?php if (!empty($pesan)): ?>
-              <div class="result"><?php echo nl2br($pesan); ?></div>
-          <?php endif; ?>
-      <?php endif; ?>
-   </div>
+    <!-- JavaScript untuk menampilkan opsi pembayaran -->
+    <script>
+        function showPaymentOptions(method) {
+            const bankSelection = document.getElementById("bank-selection");
+            const accountInput = document.getElementById("account-input");
+            const virtualAccountInput = document.getElementById("virtual-account-input");
 
-   <!-- JavaScript untuk menampilkan opsi pembayaran -->
-   <script>
-       function showPaymentOptions(method) {
-           const bankSelection = document.getElementById("bank-selection");
-           const accountInput = document.getElementById("account-input");
-           const virtualAccountInput = document.getElementById("virtual-account-input");
+            bankSelection.style.display = "none";
+            accountInput.style.display = "none";
+            virtualAccountInput.style.display = "none";
 
-           bankSelection.style.display = "none";
-           accountInput.style.display = "none";
-           virtualAccountInput.style.display = "none";
-
-           if (method === "transfer_bank") {
-               bankSelection.style.display = "block";
-               accountInput.style.display = "block";
-           } else if (["shopeepay", "dana", "ovo", "gopay"].includes(method)) {
-               virtualAccountInput.style.display = "block";
-           }
-       }
-
-       function showAccountInput(bank) {
-           const accountInput = document.getElementById("account-input");
-           accountInput.style.display = bank ? "block" : "none";
-       }
-   </script>
-
+            if (method === "transfer_bank") {
+                bankSelection.style.display = "block";
+                accountInput.style.display = "block";
+            } else if (["shopeepay", "dana", "ovo", "gopay"].includes(method)) {
+                virtualAccountInput.style.display = "block";
+            }
+        }
+    </script>
 </body>
 </html>
