@@ -38,20 +38,23 @@ $menuItems = [
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-white">KOPI KITA</div>
             <div class="flex space-x-6 text-white">
-                <a href="webcafe.php" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="index.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-home mr-2"></i> Beranda
                 </a>
                 <a href="menu.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-coffee mr-2"></i> Menu
                 </a>
                 <a href="pesanansaya.php" class="flex items-center hover:text-[#d4a484] transition">
-                    <i class="fas fa-shopping-cart mr-2"></i> Pesanan Saya
+                <i class="fas fa-shopping-cart mr-2"></i> Pesanan Saya
                 </a>
                 <a href="rewards.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-award mr-2"></i> Rewards
                 </a>
                 <a href="keranjang.php" class="flex items-center hover:text-[#d4a484] transition">
-                <i class="fas fa-shopping-cart mr-2"></i> Keranjang
+                 <i class="fas fa-shopping-cart mr-2"></i> Keranjang
+                    <span id="cart-count" class="bg-red-500 text-white text-xs rounded-full px-2 ml-2">
+                <?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
+                    </span>
                 </a>
                 <a href="login.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
