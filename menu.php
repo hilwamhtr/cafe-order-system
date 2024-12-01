@@ -144,10 +144,10 @@ $filteredMenuItems = filterMenu($activeCategory, $menuItems);
                 <a href="#rewards" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-award mr-2"></i> Rewards
                 </a>
-                <a href="#keranjang" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="keranjang.php" class="flex items-center hover:text-[#d4a484] transition">
                 <i class="fas fa-shopping-cart mr-2"></i> Keranjang
                 </a>
-                <a href="logout.php" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="login.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
                 </a>
             </div>
@@ -155,43 +155,54 @@ $filteredMenuItems = filterMenu($activeCategory, $menuItems);
     </nav>
 
     <!-- Menu Section -->
-    <div class="container mx-auto pt-24 px-4">
-        <h1 class="text-4xl font-bold text-center mb-8">Menu Kopi Kita</h1>
-        
-        <!-- Kategori Menu -->
-        <div class="flex justify-center mb-8 space-x-4">
-            <?php foreach($menuCategories as $category): ?>
-                <a href="?category=<?= urlencode($category) ?>" 
-                   class="px-4 py-2 rounded-full <?= $activeCategory == $category ? 'bg-[#6f4e37] text-white' : 'bg-white text-[#6f4e37] border border-[#6f4e37]' ?> hover:bg-[#6f4e37] hover:text-white transition">
-                    <?= $category ?>
-                </a>
-            <?php endforeach; ?>
-        </div>
+<div class="container mx-auto pt-24 px-4">
+    <h1 class="text-4xl font-bold text-center mb-8">Menu Kopi Kita</h1>
 
-        <div class="grid md:grid-cols-3 gap-6">
-    <?php foreach($filteredMenuItems as $item): ?>
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <!-- Gambar dengan ukuran 300x400 -->
-            <img src="<?= $item['image'] ?>" alt="<?= $item['name'] ?>" 
-                 style="width: 300px; height: 400px; object-fit: cover; display: block; margin: auto;">
-            <div class="p-4">
-                <h3 class="text-xl font-semibold mb-2"><?= $item['name'] ?></h3>
-                <p class="text-gray-600 mb-4"><?= $item['description'] ?></p>
-                <div class="flex justify-between items-center">
-                    <span class="text-[#6f4e37] font-bold">Rp. <?= number_format($item['price'], 0, ',', '.') ?></span>
-                </div>
-                <!-- Tombol di bawah -->
-                <div class="flex space-x-2 mt-4">
-                    <button class="bg-[#6f4e37] text-white px-3 py-1.5 rounded-lg hover:bg-[#d4a484] transition flex-1 text-center">
-                        Tambah ke Keranjang
-                    </button>
-                    <button class="bg-[#6f4e37] text-white px-3 py-1.5 rounded-lg hover:bg-[#d4a484] transition flex-1 text-center">
-                        Pesan Sekarang
-                    </button>
+    <!-- Kategori Menu -->
+    <div class="flex justify-center mb-8 space-x-4">
+        <?php foreach($menuCategories as $category): ?>
+            <a href="?category=<?= urlencode($category) ?>" 
+                class="px-4 py-2 rounded-full <?= $activeCategory == $category ? 'bg-[#6f4e37] text-white' : 'bg-white text-[#6f4e37] border border-[#6f4e37]' ?> hover:bg-[#6f4e37] hover:text-white transition">
+                <?= $category ?>
+            </a>
+        <?php endforeach; ?>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+        <?php foreach($filteredMenuItems as $item): ?>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="<?= $item['image'] ?>" alt="<?= $item['name'] ?>" 
+                    style="width: 300px; height: 400px; object-fit: cover; display: block; margin: auto;">
+                <div class="p-4">
+                    <h3 class="text-xl font-semibold mb-2"><?= $item['name'] ?></h3>
+                    <p class="text-gray-600 mb-4"><?= $item['description'] ?></p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-[#6f4e37] font-bold">Rp. <?= number_format($item['price'], 0, ',', '.') ?></span>
+                    </div>
+                    <div class="flex space-x-2 mt-4">
+                        <!-- Form untuk tambah ke keranjang -->
+                        <form action="keranjang.php" method="POST">
+                            <input type="hidden" name="menu_id" value="<?= $item['name'] ?>">
+                            <input type="hidden" name="menu_price" value="<?= $item['price'] ?>">
+                            <input type="hidden" name="menu_image" value="<?= $item['image'] ?>">
+                            <button type="submit" name="add_to_cart" class="bg-[#6f4e37] text-white px-3 py-1.5 rounded-lg hover:bg-[#d4a484] transition flex-1 text-center">
+                                Tambah ke Keranjang
+                            </button>
+                        </form>
+                        <!-- Pesan sekarang (bisa dikembangkan lebih lanjut) -->
+                        <form action="pesanansaya.php" method="POST">
+                            <input type="hidden" name="menu_id" value="<?= $item['name'] ?>">
+                            <input type="hidden" name="menu_price" value="<?= $item['price'] ?>">
+                            <input type="hidden" name="menu_image" value="<?= $item['image'] ?>">
+                            <button type="submit" name="add_to_cart" class="bg-[#6f4e37] text-white px-3 py-1.5 rounded-lg hover:bg-[#d4a484] transition flex-1 text-center">
+                                Pesan Sekarang
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    </div>
 </div>
 
     <!-- Footer -->
