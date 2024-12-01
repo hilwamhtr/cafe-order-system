@@ -1,14 +1,22 @@
 <?php
-session_start(); // Memulai sesi
+// Pastikan sesi sudah dimulai
+session_start();
 
 // Inisialisasi rewards jika belum ada
 if (!isset($_SESSION['rewards'])) {
     $_SESSION['rewards'] = 0; // Default rewards: 0
 }
 
-// Inisialisasi variabel
-$pesan = '';
-$formVisible = true; // Menentukan apakah form harus ditampilkan
+// Fungsi untuk menambah stempel
+function tambahStempel() {
+    if (!isset($_SESSION['current_stamps'])) {
+        $_SESSION['current_stamps'] = 0;
+    }
+    $_SESSION['current_stamps']++; // Tambah stempel
+}
+
+// Cek apakah pembayaran berhasil (misalnya dengan pengecekan status transaksi)
+$pembayaran_berhasil = false; // Nilai default false untuk pembayaran belum berhasil
 
 // Proses jika form disubmit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -26,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $pesan = "Pembayaran sebesar Rp $jumlah berhasil diproses melalui Transfer Bank ($bank). Terima kasih, $nama!";
             $_SESSION['rewards']++; // Tambah rewards
-            $formVisible = false;
+            $pembayaran_berhasil = true; // Pembayaran berhasil
         }
     } elseif (in_array($paymentMethod, ['shopeepay', 'dana', 'ovo', 'gopay'])) {
         if (!$nomorVA) {
@@ -34,21 +42,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $pesan = "Pembayaran sebesar Rp $jumlah berhasil diproses melalui " . ucfirst($paymentMethod) . ". Terima kasih, $nama!";
             $_SESSION['rewards']++; // Tambah rewards
-            $formVisible = false;
+            $pembayaran_berhasil = true; // Pembayaran berhasil
         }
     } elseif ($paymentMethod === 'cod') {
         $pesan = "Pesanan Anda akan dibayar saat pengantaran (COD). Terima kasih, $nama!";
         $_SESSION['rewards']++; // Tambah rewards
-        $formVisible = false;
+        $pembayaran_berhasil = true; // Pembayaran berhasil
     } else {
         $pesan = "Harap lengkapi semua data pembayaran.";
     }
 }
+
 // Periksa apakah reward telah mencapai 10 untuk memberikan diskon
 $diskonPesan = '';
 if ($_SESSION['rewards'] >= 10) {
     $diskonPesan = "Selamat! Anda telah mengumpulkan 10 rewards. Anda mendapatkan potongan 50% untuk pembelian berikutnya!";
     $_SESSION['rewards'] = 0; // Reset rewards setelah diskon
+}
+
+if ($pembayaran_berhasil) {
+    // Tambah stempel setelah pembayaran berhasil
+    tambahStempel();
+
+    // Redirect ke halaman rewards setelah pembayaran sukses
+    header('Location: rewards.php');
+    exit;
 }
 ?>
 
@@ -140,24 +158,7 @@ if ($_SESSION['rewards'] >= 10) {
     <div class="container">
         <h1>PAYMENT KOPI KITA</h1>
 
-        <?php if (!$formVisible): ?>
-    <div class="result">
-        <!-- Menampilkan pesan hasil pembayaran -->
-        <p><?php echo nl2br($pesan); ?></p>
-
-        <!-- Menampilkan pesan diskon jika ada -->
-        <?php if (!empty($diskonPesan)): ?>
-            <p style="color: red; font-weight: bold; margin-top: 10px;"><?= $diskonPesan; ?></p>
-        <?php endif; ?>
-
-        <!-- Tombol untuk melihat rewards -->
-        <a href="rewards.php" style="display: inline-block; text-align: center; 
-        padding: 10px 15px; background-color: #87460d; color: white; 
-        text-decoration: none; font-weight: bold; border-radius: 4px; margin-top: 15px;">
-            Lihat Rewards
-        </a>
-    </div>
-        <?php else: ?>
+        <?php if (!$pembayaran_berhasil): ?>
             <form id="payment-form" method="POST">
                 <label for="nama">Nama Lengkap</label>
                 <input type="text" id="nama" name="nama" required>
@@ -209,16 +210,13 @@ if ($_SESSION['rewards'] >= 10) {
             const accountInput = document.getElementById("account-input");
             const virtualAccountInput = document.getElementById("virtual-account-input");
 
-            bankSelection.style.display = "none";
-            accountInput.style.display = "none";
-            virtualAccountInput.style.display = "none";
+            bankSelection.style.display = method === "transfer_bank" ? "block" : "none";
+            accountInput.style.display = method === "transfer_bank" && document.getElementById("bank").value ? "block" : "none";
+            virtualAccountInput.style.display = method === "shopeepay" || method === "dana" || method === "ovo" || method === "gopay" ? "block" : "none";
+        }
 
-            if (method === "transfer_bank") {
-                bankSelection.style.display = "block";
-                accountInput.style.display = "block";
-            } else if (["shopeepay", "dana", "ovo", "gopay"].includes(method)) {
-                virtualAccountInput.style.display = "block";
-            }
+        function showAccountInput(bank) {
+            document.getElementById("account-input").style.display = bank ? "block" : "none";
         }
     </script>
 </body>
