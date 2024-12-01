@@ -79,11 +79,12 @@ if (isset($_POST['order_now'])) {
                 <a href="pesanansaya.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-shopping-cart mr-2"></i> Pesanan Saya
                 </a>
-                <a href="#rewards" class="flex items-center hover:text-[#d4a484] transition">
+                <a href="rewards.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-award mr-2"></i> Rewards
                 </a>
                 <a href="keranjang.php" class="flex items-center hover:text-[#d4a484] transition">
-                <i class="fas fa-shopping-cart mr-2"></i> Keranjang
+                    <i class="fas fa-shopping-cart mr-2"></i> Keranjang
+                 <span id="cart-count" class="bg-red-500 text-white text-xs rounded-full px-2 ml-2">0</span>
                 </a>
                 <a href="login.php" class="flex items-center hover:text-[#d4a484] transition">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
